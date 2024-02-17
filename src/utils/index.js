@@ -10,8 +10,8 @@ export const HOOKS = [
 ]
 
 let starts = {}
-starts.data = function() {
-
+starts.data = function(parentVal, childVal) {
+    return childVal
 }
 
 HOOKS.forEach(item=>{

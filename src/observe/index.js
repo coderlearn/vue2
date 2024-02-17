@@ -1,9 +1,10 @@
+import Dep from "./dep"
 
 // import arrMethods from './array.js' 
 export function observe(data) {
     console.log(data, '------observe')
-    if(typeof data != 'Object' || typeof data == null){
-
+    if(typeof data != 'object' || typeof data == null){
+        return data
     }else{
         return new Observe(data)
     }
@@ -12,10 +13,12 @@ export function observe(data) {
 
 class Observe{
     constructor(value){
-        Object.defineProperty(value, __ob__, {
+        debugger
+        Object.defineProperty(value, '__ob__', {
             enumerable: false,
             value: this
         })
+        this.dep = new Dep()
         if(Array.isArray(value)){
             console.log(value)
             // value.__proto__ = arrMethods
@@ -26,6 +29,7 @@ class Observe{
         }
     }
     walkValue(data){
+        
         let keys = Object.keys(data)
         for(let i = 0;i < keys.length; i++){
             let key = keys[i]
@@ -44,19 +48,30 @@ class Observe{
 }
 
 function defineReactive(data, key, value){
-    observe(value)
+    let childDep = observe(value)
+    // let dep = new dep()
+    // debugger
+
+    let dep = new Dep()
     Object.defineProperty(data,key, {
         // 可枚举
         // 只读
         // 可配置
-        get(){
-            console.log('获取obj')
+        get(){   // 收集watcher
+            if(Dep.target){
+                dep.depend()
+                if(childDep.dep){
+                    childDep.dep.depend()
+                }
+            }
+            console.log('获取obj',dep,'----------------------------')
             return value
         },
         set(newValue){
             console.log('设置obj')
             value = newValue
             observe(newValue)
+            dep.notify()
         }
     })
 }
