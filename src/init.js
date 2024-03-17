@@ -17,7 +17,7 @@ export function initMixin(Vue){
         callHook(vm,'beforeCreate')
         // 初始化状态
         initState(vm)
-        // 
+        // 颯颯阿薩颯颯
         callHook(vm,'created')
 
     }
